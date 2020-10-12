@@ -1,0 +1,65 @@
+﻿@page "/"
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<div class="container text-body" style="overflow:hidden">
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="centering text-center">
+                    <div class="w-20">
+                        <img src="images/profileimage.jpg" width="300" />
+                    </div>
+                    <div class="w-20">
+                        &nbsp;
+                    </div>
+                    <div class="w-70">
+                        <h2>PresenceLight by Isaac Levin</h2>
+                        <br />
+                        <h4><a href="https://github.com/isaacrlevin/presencelight" target="_blank">https://github.com/isaacrlevin/presencelight</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br /><br /><br />
+
+    <h5>Download by Runtime Identifier</h5>
+    @if (blobs != null)
+    {
+        @foreach (var blob in blobs)
+        {
+            <a href="@blob.Value">@blob.Key</a>
+            <br />
+        }
+    }
+
+</div>
+
+@code {
+
+    Dictionary<string, string> blobs = new Dictionary<string, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Create a BlobServiceClient object which will be used to create a container client
+        BlobServiceClient blobServiceClient = new BlobServiceClient(Configuration["StorageConnectionString"]);
+
+        //Create a unique name for the container
+        string containerName = Configuration["ContainerName"];
+
+        // Create the container and return a container client object
+        BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+        await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
+        {
+            blobs.Add(blobItem.Name.Split('/').LastOrDefault(),
+                   Flurl.Url.Combine(
+                       containerClient.Uri.AbsoluteUri,
+                       blobItem.Name
+                   )
+               );
+        }
+    }
+}
