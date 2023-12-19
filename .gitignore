@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 /src/PresenceLightWorkerDownloads/Properties/*
+/src/PresenceLightWorkerDownloads/appsettings.Development.json
