@@ -9,7 +9,7 @@
             <div class="row-fluid">
                 <div class="centering text-center">
                     <div class="w-20">
-                        <img src="profileimage.jpg" width="300" />
+                        <img src="images/profileimage.jpg" width="300" />
                     </div>
                     <div class="w-20">
                         &nbsp;
@@ -54,15 +54,12 @@
 
         await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
         {
-            if (!blobItem.Name.Contains("version"))
-            {
-                blobs.Add(blobItem.Name.Split('/').LastOrDefault(),
-                       Flurl.Url.Combine(
-                           containerClient.Uri.AbsoluteUri,
-                           blobItem.Name
-                       )
-                   );
-            }
+            blobs.Add(blobItem.Name.Split('/').LastOrDefault(),
+                   Flurl.Url.Combine(
+                       containerClient.Uri.AbsoluteUri,
+                       blobItem.Name
+                   )
+               );
         }
     }
 }
